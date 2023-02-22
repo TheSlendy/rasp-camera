@@ -1,5 +1,5 @@
 import cv2
-from os import listdir, remove, path, rmdir
+from os import listdir, remove, path, mkdir
 import re
 from detector import Detector
 from glob import glob
@@ -20,8 +20,10 @@ class Camera:
         return [self.atoi(c) for c in re.split(r'(\d+)', text)]
 
     def save_detected_motion(self, img):
-
-        frame_list = listdir(self.frame_dir)
+        try:
+            frame_list = listdir(self.frame_dir)
+        except:
+            mkdir(self.frame_dir)
         if frame_list:
             frame_list.sort(key=self.natural_keys)
             frame_number = re.findall(r'\d+', frame_list[-1])[0]
@@ -37,7 +39,10 @@ class Camera:
             size = (width, height)
             img_array.append(img)
         try:
-            video_list = listdir("motions")
+            try:
+                video_list = listdir("motions")
+        	except:
+                mkdir(self.frame_dir)
             if video_list:
                 video_list.sort(key=self.natural_keys)
                 video_number = int(re.findall(r'\d+', video_list[-1])[0])
